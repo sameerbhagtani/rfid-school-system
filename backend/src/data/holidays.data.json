@@ -1,0 +1,39 @@
+[
+    {
+        "date": "2026-01-01",
+        "reason": "New Year"
+    },
+    {
+        "date": "2026-01-04",
+        "reason": "Sunday"
+    },
+    {
+        "date": "2026-01-11",
+        "reason": "Sunday"
+    },
+    {
+        "date": "2026-01-14",
+        "reason": "Uttarayan"
+    },
+    {
+        "date": "2026-01-18",
+        "reason": "Sunday"
+    },
+    {
+        "date": "2026-01-25",
+        "reason": "Sunday"
+    },
+
+    {
+        "date": "2026-02-08",
+        "reason": "Sunday"
+    },
+    {
+        "date": "2026-02-15",
+        "reason": "Sunday"
+    },
+    {
+        "date": "2026-02-22",
+        "reason": "Sunday"
+    }
+]
