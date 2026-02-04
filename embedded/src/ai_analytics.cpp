@@ -3,9 +3,11 @@
 #include <LiquidCrystal_I2C.h> // for controlling the 16x2 I2C LCD
 #include <SPI.h>               // SPI protocol for the RC522
 #include <MFRC522.h>           // RC522 library
-
 #include <WiFi.h>
 #include "Audio.h"
+
+#define LCD_COLS 16
+#define LCD_ROWS 2
 
 // pin definitions
 const int SDA_PIN = 5;
@@ -16,13 +18,13 @@ const int I2S_BCLK = 26;
 const int I2S_DOUT = 27;
 
 // global variables & objects
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, LCD_COLS, LCD_ROWS);
 MFRC522 mfrc522(SDA_PIN, RST_PIN);
 Audio audio;
 
 bool isAudioPlaying = false;
 
-void printToLCD(String msg);
+void printToLCD(const String &msg);
 String readRfidCard();
 void saySomething(String text);
 void audio_eof_speech(const char *info);
@@ -34,7 +36,6 @@ void setup()
     // 1. Initialize Hardware First
     lcd.init();
     lcd.backlight();
-    printToLCD("Booting...");
 
     SPI.begin();
     mfrc522.PCD_Init();
@@ -52,12 +53,11 @@ void setup()
 
     // 3. ONLY start Audio after WiFi is 100% stable
     Serial.println("\nWiFi Connected!");
-    printToLCD("WiFi Ready!");
 
     audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
     audio.setVolume(21);
 
-    printToLCD("Ready!");
+    printToLCD("Tap your ID Card");
     saySomething("Tap your ID Card");
 }
 
@@ -71,14 +71,9 @@ void loop()
 
         if (cardUID != "")
         {
-            Serial.println("Card Detected: " + cardUID);
             printToLCD("ID: " + cardUID);
 
-            // Play new audio based on input
-            saySomething("Access Granted");
-
-            // The isAudioPlaying flag is now true,
-            // so this block won't run again until speech ends.
+            saySomething("Your attendance is 80% in this month. You need to come 5 more days to take your attendance upto 85%.");
         }
     }
 }
@@ -116,26 +111,39 @@ String readRfidCard()
     return uid_str;
 }
 
-void printToLCD(String msg)
+void printToLCD(const String &msg)
 {
     int row = 0;
     int col = 0;
+    unsigned int len = msg.length();
 
     lcd.clear();
 
-    for (unsigned int i = 0; i < msg.length(); i++)
+    for (unsigned int i = 0; i < len; i++)
     {
-        if (col == 16 || msg[i] == '\n')
+        // Handle manual newline characters
+        if (msg[i] == '\n')
         {
             row++;
             col = 0;
-
-            if (msg[i] == '\n')
-                continue;
+            continue;
         }
 
-        lcd.setCursor(col++, row);
+        // Handle automatic word wrap when reaching end of column
+        if (col == LCD_COLS)
+        {
+            row++;
+            col = 0;
+        }
+
+        // Stop printing if we run out of LCD vertical space
+        if (row >= LCD_ROWS)
+            break;
+
+        lcd.setCursor(col, row);
         lcd.print(msg[i]);
+
+        col++;
     }
 }
 
