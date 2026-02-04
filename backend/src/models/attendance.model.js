@@ -15,6 +15,7 @@ const attendanceSchema = new Schema({
     markedBy: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        required: true,
     },
 });
 

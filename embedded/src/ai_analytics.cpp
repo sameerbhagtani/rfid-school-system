@@ -20,51 +20,66 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 MFRC522 mfrc522(SDA_PIN, RST_PIN);
 Audio audio;
 
+bool isAudioPlaying = false;
+
 void printToLCD(String msg);
 String readRfidCard();
+void saySomething(String text);
+void audio_eof_speech(const char *info);
 
 void setup()
 {
     Serial.begin(115200);
 
-    SPI.begin();        // Init SPI bus
-    mfrc522.PCD_Init(); // Init MFRC522 card
-
-    audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-    // Volume level (0-21)
-    audio.setVolume(12);
-    // Connect to an online MP3 stream or file
-    audio.connecttohost("http://stream.radioparadise.com/mp3-128");
-
+    // 1. Initialize Hardware First
     lcd.init();
     lcd.backlight();
+    printToLCD("Booting...");
 
-    printToLCD("Connecting...");
+    SPI.begin();
+    mfrc522.PCD_Init();
 
-    WiFi.disconnect();
+    // 2. Start WiFi
     WiFi.mode(WIFI_STA);
     WiFi.begin("android-phone", "20002000");
 
+    printToLCD("Connecting WiFi");
     while (WiFi.status() != WL_CONNECTED)
     {
+        delay(500);
+        Serial.print(".");
     }
 
-    printToLCD("Tap your ID Card");
+    // 3. ONLY start Audio after WiFi is 100% stable
+    Serial.println("\nWiFi Connected!");
+    printToLCD("WiFi Ready!");
+
+    audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+    audio.setVolume(21);
+
+    printToLCD("Ready!");
+    saySomething("Tap your ID Card");
 }
 
 void loop()
 {
-    // Attempt to read a card.
-    String cardUID = readRfidCard();
+    audio.loop();
 
-    if (cardUID != "")
+    if (!isAudioPlaying)
     {
-        Serial.println(cardUID);
-        printToLCD(cardUID);
-        audio.loop();
+        String cardUID = readRfidCard();
 
-        delay(1000);
-        printToLCD("Tap your ID Card");
+        if (cardUID != "")
+        {
+            Serial.println("Card Detected: " + cardUID);
+            printToLCD("ID: " + cardUID);
+
+            // Play new audio based on input
+            saySomething("Access Granted");
+
+            // The isAudioPlaying flag is now true,
+            // so this block won't run again until speech ends.
+        }
     }
 }
 
@@ -122,4 +137,15 @@ void printToLCD(String msg)
         lcd.setCursor(col++, row);
         lcd.print(msg[i]);
     }
+}
+
+void saySomething(String text)
+{
+    isAudioPlaying = true;
+    audio.connecttospeech(text.c_str(), "en");
+}
+
+void audio_eof_speech(const char *info)
+{
+    isAudioPlaying = false;
 }
