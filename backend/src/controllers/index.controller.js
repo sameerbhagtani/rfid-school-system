@@ -161,6 +161,13 @@ export async function getAnalytics(req, res, next) {
             ? "above"
             : "below";
 
+    const attendanceDates = monthlyRecords.map(
+        (r) => r.date.toISOString().split("T")[0],
+    );
+    const holidayDates = holidays.map(
+        (h) => h.date.toISOString().split("T")[0],
+    );
+
     return res.status(200).json({
         success: true,
         data: {
@@ -169,6 +176,8 @@ export async function getAnalytics(req, res, next) {
             studentPercent,
             classAvgPercent,
             performance,
+            attendanceDates, // array of present dates
+            holidayDates, // array of holiday dates
         },
     });
 

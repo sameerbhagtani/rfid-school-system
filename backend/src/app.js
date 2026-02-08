@@ -3,6 +3,7 @@ import "dotenv/config";
 
 // core requires
 import express from "express";
+import cors from "cors";
 
 // app initialization
 const app = express();
@@ -13,6 +14,7 @@ connectDB();
 
 // global middlewares
 app.use(express.json());
+app.use(cors());
 
 // routes
 import router from "./routes/index.route.js";
