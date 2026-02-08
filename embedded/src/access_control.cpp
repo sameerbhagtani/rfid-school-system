@@ -5,21 +5,33 @@
 #include <MFRC522.h>           // RC522 library
 #include <Servo.h>
 
+#include <ESP8266WiFi.h>       // connect to wifi network
+#include <ESP8266HTTPClient.h> // send http requests and receive resopnses
+#include <ESP8266mDNS.h>       // mDNS resolution
+#include <WiFiManager.h>       // for storing network credentials
+#include <ArduinoJson.h>       // for building JSON payload
+
 #define LCD_COLS 16
 #define LCD_ROWS 2
 
-// pin definitions
-const int SDA_PIN = D4;
-const int RST_PIN = D3;
-const int BUZZER_PIN = D8;
-const int SERVO_PIN = 16;
+#define SDA_PIN D4
+#define RST_PIN D3
+#define BUZZER_PIN D8
+#define SERVO_PIN 16
 
 // global variables & objects
 LiquidCrystal_I2C lcd(0x27, LCD_COLS, LCD_ROWS);
 MFRC522 mfrc522(SDA_PIN, RST_PIN);
 Servo servo;
 
+const char *AP_NAME = "access_control";
+const String API_URL = "http://arch-laptop.local:3000/api/get-role";
+// const String API_URL = "http://10.80.185.89:3000/api/get-role";
+bool showReconnectedMsg = false;
+
 // function prototypes
+void APCallback(WiFiManager *myWiFiManager);
+void connectToWifi();
 String readRfidCard();
 void printToLCD(const String &msg);
 void successBeep();
@@ -27,44 +39,166 @@ void failureBeep();
 
 void setup()
 {
+    Serial.begin(115200);
+
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(BUZZER_PIN, OUTPUT);
 
-    Serial.begin(115200);
-
     SPI.begin();        // Init SPI bus
     mfrc522.PCD_Init(); // Init MFRC522 card
-    servo.attach(SERVO_PIN);
 
+    Wire.begin();
     lcd.init();
     lcd.backlight();
+
+    connectToWifi();
+
+    if (!MDNS.begin("esp8266-attendance"))
+    {
+        Serial.println("Error setting up MDNS responder!");
+    }
+    else
+    {
+        Serial.println("mDNS responder started");
+    }
 
     printToLCD("Tap your ID Card");
 }
 
 void loop()
 {
-    // Attempt to read a card.
+    MDNS.update();
+
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        showReconnectedMsg = true;
+
+        printToLCD("WiFi Lost\nReconnecting...");
+        failureBeep();
+
+        delay(5000);
+        return;
+    }
+
+    if (WiFi.status() == WL_CONNECTED && showReconnectedMsg)
+    {
+        showReconnectedMsg = false;
+
+        printToLCD("Reconnected!");
+        successBeep();
+
+        delay(2000);
+
+        printToLCD("Tap your ID Card");
+    }
+
+    // attempt to read a card
     String cardUID = readRfidCard();
 
     if (cardUID != "")
     {
-        if (cardUID == "53CC0829")
+        printToLCD("Checking ID..."); // Give user feedback
+        WiFiClient client;
+        HTTPClient http;
+
+        http.begin(client, API_URL + "/" + cardUID);
+
+        int httpCode = http.GET();
+
+        if (httpCode == HTTP_CODE_OK)
         {
-            printToLCD("Access Granted");
-            successBeep();
+            String payload = http.getString();
 
-            servo.write(180);
-            delay(3000);
+            StaticJsonDocument<300> doc;
+            DeserializationError error = deserializeJson(doc, payload);
 
-            servo.write(0);
+            if (!error)
+            {
+                bool success = doc["success"];
+
+                if (success)
+                {
+                    String name = doc["data"]["name"];
+                    String role = doc["data"]["role"];
+
+                    if (role == "teacher")
+                    {
+
+                        printToLCD("Access Granted\n" + name);
+                        successBeep();
+
+                        // 1. Wake up the servo
+                        servo.attach(SERVO_PIN);
+                        delay(10); // Tiny delay to stabilize signal
+
+                        servo.write(180);
+                        delay(3000);
+                        servo.write(0);
+
+                        delay(1000);
+
+                        servo.detach();
+                    }
+                    else
+                    {
+                        printToLCD("Access Denied\n" + name);
+                        failureBeep();
+                    }
+                }
+                else
+                {
+                    printToLCD("User Not Found");
+                    failureBeep();
+                }
+            }
+            else
+            {
+                printToLCD("Internal Error");
+                failureBeep();
+            }
         }
         else
         {
-            printToLCD("Access Denied");
+            printToLCD("Server Error");
             failureBeep();
         }
+
+        http.end();
+
+        delay(2000);
+        printToLCD("Tap your ID Card");
     }
+}
+
+void APCallback(WiFiManager *myWiFiManager)
+{
+    printToLCD(String("Started AP Mode : ") + AP_NAME);
+    failureBeep();
+}
+
+void connectToWifi()
+{
+    WiFiManager wifiManager;
+
+    // the following will reset saved credentials
+    // wifiManager.resetSettings();
+
+    printToLCD("Connecting to saved WiFi...");
+
+    wifiManager.setAPCallback(APCallback);
+
+    // the following will try saved Wi-Fi, if not found, it starts AP mode
+    if (!wifiManager.autoConnect(AP_NAME))
+    {
+        printToLCD("Can't Connect to WiFi");
+        failureBeep();
+        return;
+    }
+
+    successBeep();
+    printToLCD("Connected!");
+
+    delay(2000);
 }
 
 String readRfidCard()
@@ -110,7 +244,6 @@ void printToLCD(const String &msg)
 
     for (unsigned int i = 0; i < len; i++)
     {
-        // Handle manual newline characters
         if (msg[i] == '\n')
         {
             row++;
@@ -118,14 +251,12 @@ void printToLCD(const String &msg)
             continue;
         }
 
-        // Handle automatic word wrap when reaching end of column
         if (col == LCD_COLS)
         {
             row++;
             col = 0;
         }
 
-        // Stop printing if we run out of LCD vertical space
         if (row >= LCD_ROWS)
             break;
 

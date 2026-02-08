@@ -1,27 +1,27 @@
 [
     {
         "userId": "A3517729",
-        "name": "teacher1",
+        "name": "Suva Ma'am",
         "role": "teacher"
     },
     {
         "userId": "5D497406",
-        "name": "teacher2",
+        "name": "Hitesh Sir",
         "role": "teacher"
     },
     {
         "userId": "53CC0829",
-        "name": "sameer",
+        "name": "Sameer",
         "role": "student"
     },
     {
         "userId": "6286FA05",
-        "name": "abhishek",
+        "name": "Abhishek",
         "role": "student"
     },
     {
         "userId": "23669213",
-        "name": "monish",
+        "name": "Monish",
         "role": "student"
     },
     {

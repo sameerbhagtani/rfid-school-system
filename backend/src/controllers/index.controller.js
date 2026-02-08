@@ -63,7 +63,7 @@ export async function markAttendance(req, res, next) {
 
     return res.json({
         success: true,
-        message: `Marked ${attendanceRecords.length} students present.`,
+        message: `Attendance Marked. Students : ${attendanceRecords.length}`,
     });
 }
 
@@ -77,9 +77,9 @@ export async function getRole(req, res, next) {
 
     return res.json({
         success: true,
-        message: "User role fetched successfully",
         data: {
             role: user.role,
+            name: user.name,
         },
     });
 }
@@ -234,6 +234,6 @@ export async function resetAttendanceForToday(req, res, next) {
 
     return res.json({
         success: true,
-        message: `Today's attendance has been reset. Removed ${result.deletedCount} records.`,
+        message: `Removed ${result.deletedCount} records.`,
     });
 }
