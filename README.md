@@ -409,11 +409,11 @@ Possible errors:
 
 ### Home UI (Student Directory)
 
-<img src="images/home-ui.png" alt="Home UI" width="65%">
+<img src="images/home-ui.png" alt="Home UI" width="40%">
 
 ### Analytics UI (Calendar and Stats)
 
-<img src="images/analytics-ui.png" alt="Analytics UI" width="65%">
+<img src="images/analytics-ui.png" alt="Analytics UI" width="40%%">
 
 ---
 
