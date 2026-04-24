@@ -1,0 +1,129 @@
+:root {
+    --bg: #f4f8ff;
+    --surface: #ffffff;
+    --ink: #13304f;
+    --muted: #5f7390;
+    --accent: #1f67d8;
+    --accent-soft: #e7f0ff;
+    --border: #dbe6f5;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top right, #d9e8ff 0%, transparent 35%),
+        radial-gradient(circle at bottom left, #e9f2ff 0%, transparent 40%),
+        var(--bg);
+}
+
+.page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.2rem;
+}
+
+.hero {
+    background: linear-gradient(135deg, #0f58c7 0%, #2f7cec 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.4rem;
+    box-shadow: 0 10px 24px rgba(31, 103, 216, 0.22);
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+}
+
+.hero p {
+    margin: 0.4rem 0 0;
+    opacity: 0.95;
+}
+
+.students-panel {
+    margin-top: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 6px 16px rgba(18, 48, 89, 0.08);
+}
+
+.students-panel h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.state-message {
+    margin: 0.7rem 0 0.5rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.students-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+}
+
+.student-item a {
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    border-radius: 10px;
+    padding: 0.8rem 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    transition:
+        transform 130ms ease,
+        border-color 130ms ease,
+        box-shadow 130ms ease;
+}
+
+.student-item a:hover {
+    transform: translateY(-1px);
+    border-color: #b3cbef;
+    box-shadow: 0 8px 16px rgba(19, 48, 79, 0.08);
+}
+
+.student-name {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.student-id {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+}
+
+.error {
+    color: #9f1b1b;
+    background: #feeff0;
+    border: 1px solid #ffd4d7;
+    border-radius: 10px;
+    padding: 0.75rem;
+}
+
+@media (max-width: 640px) {
+    .page {
+        padding: 0.8rem;
+    }
+
+    .student-item a {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}

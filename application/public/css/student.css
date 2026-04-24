@@ -1,0 +1,221 @@
+:root {
+    --bg: #f4f8ff;
+    --surface: #ffffff;
+    --ink: #143250;
+    --muted: #607691;
+    --accent: #1f67d8;
+    --border: #dbe6f5;
+    --holiday: #2f7ceb;
+    --present: #26a969;
+    --absent: #d95353;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top right, #d9e8ff 0%, transparent 35%),
+        radial-gradient(circle at bottom left, #e9f2ff 0%, transparent 40%),
+        var(--bg);
+}
+
+.page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 1.2rem;
+}
+
+.hero {
+    background: linear-gradient(135deg, #0f58c7 0%, #2f7cec 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 10px 24px rgba(31, 103, 216, 0.22);
+}
+
+.hero h1 {
+    margin: 0.45rem 0 0;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+}
+
+.back-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.92rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+}
+
+.analytics-content {
+    margin-top: 1rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.calendar-card,
+.stat-card,
+.error-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(18, 48, 89, 0.08);
+}
+
+.calendar-card {
+    padding: 1rem;
+}
+
+.month-label {
+    margin: 0;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.weekdays,
+.calendar-grid {
+    margin-top: 0.7rem;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.35rem;
+}
+
+.weekdays span {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.day-cell {
+    min-height: 2.6rem;
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    background: #fff;
+    color: #27496b;
+}
+
+.day-cell.empty {
+    border: none;
+    background: transparent;
+}
+
+.day-cell.holiday {
+    background: color-mix(in srgb, var(--holiday) 22%, white);
+    border-color: color-mix(in srgb, var(--holiday) 45%, white);
+    color: #0f56bf;
+}
+
+.day-cell.present {
+    background: color-mix(in srgb, var(--present) 25%, white);
+    border-color: color-mix(in srgb, var(--present) 42%, white);
+    color: #127145;
+}
+
+.day-cell.absent {
+    background: color-mix(in srgb, var(--absent) 22%, white);
+    border-color: color-mix(in srgb, var(--absent) 40%, white);
+    color: #b12828;
+}
+
+.day-cell.pending {
+    background: #fff;
+    color: #8ca2bb;
+}
+
+.legend {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.dot.holiday {
+    background: var(--holiday);
+}
+
+.dot.present {
+    background: var(--present);
+}
+
+.dot.absent {
+    background: var(--absent);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.stat-card {
+    padding: 0.95rem;
+}
+
+.stat-label {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.stat-value {
+    margin: 0.4rem 0 0;
+    font-size: clamp(1rem, 2.6vw, 1.35rem);
+    font-weight: 700;
+}
+
+.error-box {
+    margin-top: 1rem;
+    padding: 0.85rem;
+    color: #9f1b1b;
+    border-color: #ffd4d7;
+    background: #feeff0;
+}
+
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .page {
+        padding: 0.8rem;
+    }
+
+    .calendar-card {
+        padding: 0.8rem;
+    }
+
+    .day-cell {
+        min-height: 2.2rem;
+        font-size: 0.82rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

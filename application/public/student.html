@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Student Analytics</title>
+
+        <link rel="stylesheet" href="/css/student.css" />
+    </head>
+    <body>
+        <main class="page">
+            <header class="hero">
+                <a class="back-link" href="/">Back to Home</a>
+                <h1 id="student-title">Analytics</h1>
+            </header>
+
+            <section id="error-box" class="error-box" hidden></section>
+
+            <section id="analytics-content" class="analytics-content" hidden>
+                <section class="calendar-card">
+                    <h2 id="month-label" class="month-label">Month</h2>
+                    <div class="weekdays">
+                        <span>Sun</span>
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                    </div>
+                    <div
+                        id="calendar-grid"
+                        class="calendar-grid"
+                        aria-label="Attendance calendar"
+                    ></div>
+                    <div class="legend" aria-label="calendar legend">
+                        <span><i class="dot holiday"></i>Holiday</span>
+                        <span><i class="dot present"></i>Present</span>
+                        <span><i class="dot absent"></i>Absent</span>
+                    </div>
+                </section>
+
+                <section class="stats-grid">
+                    <article class="stat-card">
+                        <p class="stat-label">Streak</p>
+                        <p id="streak-value" class="stat-value">0</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-label">Student Attendance</p>
+                        <p id="student-percent-value" class="stat-value">0%</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-label">Class Average</p>
+                        <p id="class-percent-value" class="stat-value">0%</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-label">Performance</p>
+                        <p id="performance-value" class="stat-value">-</p>
+                    </article>
+                </section>
+            </section>
+        </main>
+
+        <script src="/js/student.js"></script>
+    </body>
+</html>

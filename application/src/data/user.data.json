@@ -1,0 +1,32 @@
+[
+    {
+        "userId": "A3517729",
+        "name": "Seema ma'am",
+        "role": "teacher"
+    },
+    {
+        "userId": "5D497406",
+        "name": "Hitesh Sir",
+        "role": "teacher"
+    },
+    {
+        "userId": "53CC0829",
+        "name": "Sameer",
+        "role": "student"
+    },
+    {
+        "userId": "6286FA05",
+        "name": "Abhishek",
+        "role": "student"
+    },
+    {
+        "userId": "23669213",
+        "name": "Monish",
+        "role": "student"
+    },
+    {
+        "userId": "4340F113",
+        "name": "reset",
+        "role": "reset"
+    }
+]
